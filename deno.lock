@@ -488,6 +488,11 @@
       "npm:react-dom@19",
       "npm:react@19",
       "npm:vite@^6.1.1"
-    ]
+    ],
+    "packageJson": {
+      "dependencies": [
+        "npm:react-tinder-card@^1.6.4"
+      ]
+    }
   }
 }

@@ -1,35 +1,46 @@
+import React, { useState } from "react";
+import TinderCard from "react-tinder-card";
 import "./App.css";
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
 
-function App() {
-  const [count, setCount] = useState(0);
+type CardData = { name: string; url: string };
+
+export default function App() {
+  const [cards, setCards] = useState<CardData[]>([
+    { name: "Alice", url: "https://placekitten.com/300/400" },
+    { name: "Bob", url: "https://placekitten.com/301/400" },
+    { name: "Carol", url: "https://placekitten.com/302/400" },
+  ]);
+
+  const swiped = (direction: string, name: string) => {
+    console.log(`Swiped ${direction} on ${name}`);
+  };
+
+  const outOfFrame = (name: string) => {
+    console.log(`${name} left screen`);
+    // カード配列から除去して再レンダー
+    setCards((prev) => prev.filter((card) => card.name !== name));
+  };
 
   return (
-    <>
-      <img src="/vite-deno.svg" alt="Vite with Deno" />
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="app">
+      <h1>Swipe Demo</h1>
+      <div className="cardContainer">
+        {cards.map((card) => (
+          <TinderCard
+            key={card.name}
+            onSwipe={(dir) => swiped(dir, card.name)}
+            onCardLeftScreen={() => outOfFrame(card.name)}
+            preventSwipe={["up", "down"]}
+          >
+            <div
+              className="card"
+              style={{ backgroundImage: `url(${card.url})` }}
+            >
+              <h3>{card.name}</h3>
+            </div>
+          </TinderCard>
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button type="button" onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   );
 }
-
-export default App;
