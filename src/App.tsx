@@ -1,42 +1,40 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import TinderCard from "react-tinder-card";
 import "./App.css";
 
-type CardData = { name: string; url: string };
-
 export default function App() {
-  const [cards, setCards] = useState<CardData[]>([
-    { name: "Alice", url: "https://placekitten.com/300/400" },
-    { name: "Bob", url: "https://placekitten.com/301/400" },
-    { name: "Carol", url: "https://placekitten.com/302/400" },
-  ]);
+  type CardData = { id: number; text: string; emoji: string };
+  const initialCards: CardData[] = [
+    { id: 1, text: "おはようございます", emoji: "☀️" },
+    { id: 2, text: "お昼ごはん何食べる？", emoji: "🍱" },
+    { id: 3, text: "今日は頑張ろう！", emoji: "💪" },
+  ];
 
-  const swiped = (direction: string, name: string) => {
-    console.log(`Swiped ${direction} on ${name}`);
+  const [cards, setCards] = useState<CardData[]>(initialCards);
+
+  const swiped = (dir: string, id: number) => {
+    console.log(`Swiped ${dir} on card ${id}`);
   };
 
-  const outOfFrame = (name: string) => {
-    console.log(`${name} left screen`);
-    // カード配列から除去して再レンダー
-    setCards((prev) => prev.filter((card) => card.name !== name));
+  const outOfFrame = (id: number) => {
+    console.log(`Card ${id} left screen`);
+    setCards((prev) => prev.filter((c) => c.id !== id));
   };
 
   return (
     <div className="app">
-      <h1>Swipe Demo</h1>
+      <h1>テキスト＋絵文字スワイプ</h1>
       <div className="cardContainer">
-        {cards.map((card) => (
+        {cards.map((c) => (
           <TinderCard
-            key={card.name}
-            onSwipe={(dir) => swiped(dir, card.name)}
-            onCardLeftScreen={() => outOfFrame(card.name)}
+            key={c.id}
+            onSwipe={(dir: string) => swiped(dir, c.id)}
+            onCardLeftScreen={() => outOfFrame(c.id)}
             preventSwipe={["up", "down"]}
           >
-            <div
-              className="card"
-              style={{ backgroundImage: `url(${card.url})` }}
-            >
-              <h3>{card.name}</h3>
+            <div className="card">
+              <span className="emoji">{c.emoji}</span>
+              <p className="message">{c.text}</p>
             </div>
           </TinderCard>
         ))}
